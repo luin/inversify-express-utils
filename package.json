@@ -1,5 +1,5 @@
 {
-  "name": "@luin/inversify-express-utils",
+  "name": "inversify-bay-utils",
   "version": "6.2.0",
   "description": "Some utilities for the development of express applications with Inversify",
   "main": "lib/index.js",
