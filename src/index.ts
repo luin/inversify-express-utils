@@ -1,8 +1,9 @@
 import { InversifyExpressServer } from "./server";
 import { controller, httpMethod, httpGet, httpPut, httpPost, httpPatch,
         httpHead, all, httpDelete, request, response, requestParam, queryParam,
+        registerParameterMetadata,
         requestBody, requestHeaders, cookies, next, injectHttpContext } from "./decorators";
-import { TYPE } from "./constants";
+import { TYPE, PARAMETER_TYPE } from "./constants";
 import { interfaces } from "./interfaces";
 import * as results from "./results";
 import { BaseHttpController } from "./base_http_controller";
@@ -29,6 +30,7 @@ export {
     all,
     httpDelete,
     TYPE,
+    PARAMETER_TYPE,
     request,
     response,
     requestParam,
@@ -43,5 +45,6 @@ export {
     HttpResponseMessage,
     HttpContent,
     StringContent,
-    results
+    results,
+    registerParameterMetadata
 };

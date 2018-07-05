@@ -26,6 +26,7 @@ namespace interfaces {
         parameterName: string;
         index: number;
         type: PARAMETER_TYPE;
+        handler?: (req: express.Request, res: express.Response) => Promise<any>;
     }
 
     export interface Controller {}

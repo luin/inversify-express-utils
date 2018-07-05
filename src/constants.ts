@@ -19,7 +19,8 @@ export enum PARAMETER_TYPE {
     BODY,
     HEADERS,
     COOKIES,
-    NEXT
+    NEXT,
+    CUSTOM
 }
 
 export const DUPLICATED_CONTROLLER_NAME = (name: string) =>

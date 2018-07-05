@@ -240,7 +240,7 @@ export class InversifyExpressServer {
     ): express.RequestHandler {
         return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
             try {
-                let args = this.extractParameters(req, res, next, parameterMetadata);
+                let args = await this.extractParameters(req, res, next, parameterMetadata);
 
                 // We use a childContainer for each request so we can be
                 // sure that the binding is unique for each HTTP request
@@ -311,8 +311,8 @@ export class InversifyExpressServer {
         }
     }
 
-    private extractParameters(req: express.Request, res: express.Response, next: express.NextFunction,
-        params: interfaces.ParameterMetadata[]): any[] {
+    private async extractParameters(req: express.Request, res: express.Response, next: express.NextFunction,
+        params: interfaces.ParameterMetadata[]): Promise<any[]> {
         let args = [];
         if (!params || !params.length) {
             return [req, res, next];
@@ -340,6 +340,12 @@ export class InversifyExpressServer {
                     break;
                 case PARAMETER_TYPE.COOKIES:
                     args[item.index] = this.getParam(req, "cookies", item.parameterName);
+                    break;
+                case PARAMETER_TYPE.CUSTOM:
+                    if (item.handler === undefined) {
+                        throw new Error("Custom implementation missing handler");
+                    }
+                    args[item.index] = await item.handler(req, res);
                     break;
                 default:
                     args[item.index] = res;

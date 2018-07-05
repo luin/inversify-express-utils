@@ -106,26 +106,33 @@ function paramDecoratorFactory(parameterType: PARAMETER_TYPE): (name?: string) =
     };
 }
 
+export function registerParameterMetadata(
+    target: Object,
+    methodName: string,
+    index: number,
+    parameterMetadata: interfaces.ParameterMetadata
+): void {
+    let metadataList: interfaces.ControllerParameterMetadata = {};
+    let parameterMetadataList: interfaces.ParameterMetadata[] = [];
+    if (!Reflect.hasMetadata(METADATA_KEY.controllerParameter, target.constructor)) {
+        parameterMetadataList.unshift(parameterMetadata);
+    } else {
+        metadataList = Reflect.getMetadata(METADATA_KEY.controllerParameter, target.constructor);
+        if (metadataList.hasOwnProperty(methodName)) {
+            parameterMetadataList = metadataList[methodName];
+        }
+        parameterMetadataList.unshift(parameterMetadata);
+    }
+    metadataList[methodName] = parameterMetadataList;
+    Reflect.defineMetadata(METADATA_KEY.controllerParameter, metadataList, target.constructor);
+}
+
 export function params(type: PARAMETER_TYPE, parameterName: string) {
     return function (target: Object, methodName: string, index: number) {
-
-        let metadataList: interfaces.ControllerParameterMetadata = {};
-        let parameterMetadataList: interfaces.ParameterMetadata[] = [];
-        let parameterMetadata: interfaces.ParameterMetadata = {
+        registerParameterMetadata(target, methodName, index, {
             index: index,
             parameterName: parameterName,
             type: type
-        };
-        if (!Reflect.hasMetadata(METADATA_KEY.controllerParameter, target.constructor)) {
-            parameterMetadataList.unshift(parameterMetadata);
-        } else {
-            metadataList = Reflect.getMetadata(METADATA_KEY.controllerParameter, target.constructor);
-            if (metadataList.hasOwnProperty(methodName)) {
-                parameterMetadataList = metadataList[methodName];
-            }
-            parameterMetadataList.unshift(parameterMetadata);
-        }
-        metadataList[methodName] = parameterMetadataList;
-        Reflect.defineMetadata(METADATA_KEY.controllerParameter, metadataList, target.constructor);
+        });
     };
 }
